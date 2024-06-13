@@ -74,9 +74,9 @@ const Index = () => {
         />
       </Flex>
 
-      <Flex flex="1">
+      <Flex flex="1" flexDirection={{ base: "column", md: "row" }}>
         {/* Sidebar */}
-        <Box as="nav" width="250px" padding="4" boxShadow="md">
+        <Box as="nav" width={{ base: "100%", md: "250px" }} padding="4" boxShadow="md">
           <VStack align="start" spacing="4">
             <Heading as="h2" size="md">Task Lists</Heading>
             <Flex align="center">
@@ -104,8 +104,8 @@ const Index = () => {
 
         {/* Main Content Area */}
         <Box as="main" flex="1" padding="4">
-          <Flex mb="4" justifyContent="space-between">
-            <FormControl width="30%">
+          <Flex mb="4" justifyContent="space-between" flexDirection={{ base: "column", md: "row" }}>
+            <FormControl width={{ base: "100%", md: "30%" }} mb={{ base: "4", md: "0" }}>
               <FormLabel>Filter by Importance</FormLabel>
               <Select placeholder="All" onChange={(e) => setFilterImportance(e.target.value)}>
                 <option value="high">High</option>
@@ -113,11 +113,11 @@ const Index = () => {
                 <option value="low">Low</option>
               </Select>
             </FormControl>
-            <FormControl width="30%">
+            <FormControl width={{ base: "100%", md: "30%" }} mb={{ base: "4", md: "0" }}>
               <FormLabel>Filter by Day</FormLabel>
               <Input type="date" onChange={(e) => setFilterDay(e.target.value)} />
             </FormControl>
-            <FormControl width="30%">
+            <FormControl width={{ base: "100%", md: "30%" }}>
               <FormLabel>Filter by Category</FormLabel>
               <Select placeholder="All" onChange={(e) => setFilterCategory(e.target.value)}>
                 <option value="personal">Personal</option>
