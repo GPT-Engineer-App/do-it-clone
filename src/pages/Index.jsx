@@ -144,7 +144,7 @@ const Index = () => {
                       overflow="hidden"
                       p="4"
                       mb="4"
-                      bg={task.importance === 'high' ? 'red.200' : task.importance === 'medium' ? 'yellow.200' : 'green.200'}
+                      bg={task.importance === 'high' ? '#E19093' : task.importance === 'medium' ? '#FFE0BD' : '#D9EAD3'}
                     >
                       <Text fontWeight="bold">{task.name}</Text>
                       <Text>Importance: {task.importance}</Text>
@@ -177,7 +177,7 @@ const Index = () => {
                       overflow="hidden"
                       p="4"
                       mb="4"
-                      bg={task.importance === 'high' ? 'red.200' : task.importance === 'medium' ? 'yellow.200' : 'green.200'}
+                      bg={task.importance === 'high' ? '#E19093' : task.importance === 'medium' ? '#FFE0BD' : '#D9EAD3'}
                     >
                       <Text fontWeight="bold">{task.name}</Text>
                       <Text>Importance: {task.importance}</Text>
