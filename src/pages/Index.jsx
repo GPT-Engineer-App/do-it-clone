@@ -57,7 +57,7 @@ const Index = () => {
     <Flex height="100vh" flexDirection="column">
       {/* Header */}
       <Flex as="header" width="100%" padding="4" boxShadow="md" justifyContent="space-between" alignItems="center">
-        <Heading as="h1" size="lg">To-Do App</Heading>
+        <Heading as="h1" size="lg">This is how my brain works</Heading>
         <IconButton
           aria-label="Toggle dark mode"
           icon={colorMode === "light" ? <FaMoon /> : <FaSun />}
