@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, VStack, Text, IconButton, useColorMode, Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import { Box, Flex, Heading, VStack, Text, IconButton, useColorMode, Tabs, TabList, TabPanels, Tab, TabPanel, FormControl, FormLabel, Input, Select, Button } from "@chakra-ui/react";
 import { FaSun, FaMoon, FaTasks } from "react-icons/fa";
 
 const Index = () => {
@@ -61,8 +61,36 @@ const Index = () => {
                 </VStack>
               </TabPanel>
               <TabPanel>
-                <VStack align="start" spacing="4">
-                  <Text>Create a new task here...</Text>
+                <VStack align="start" spacing="4" as="form">
+                  <FormControl id="task-name" isRequired>
+                    <FormLabel>Task Name</FormLabel>
+                    <Input placeholder="Enter task name" />
+                  </FormControl>
+                  <FormControl id="importance" isRequired>
+                    <FormLabel>Importance</FormLabel>
+                    <Select placeholder="Select importance">
+                      <option value="high">High</option>
+                      <option value="medium">Medium</option>
+                      <option value="low">Low</option>
+                    </Select>
+                  </FormControl>
+                  <FormControl id="scheduled-time" isRequired>
+                    <FormLabel>Scheduled Time</FormLabel>
+                    <Input type="datetime-local" />
+                  </FormControl>
+                  <FormControl id="estimated-time" isRequired>
+                    <FormLabel>Estimated Time to Complete</FormLabel>
+                    <Input type="number" placeholder="Enter estimated time in hours" />
+                  </FormControl>
+                  <FormControl id="category" isRequired>
+                    <FormLabel>Category</FormLabel>
+                    <Select placeholder="Select category">
+                      <option value="personal">Personal</option>
+                      <option value="work">Work</option>
+                      <option value="shopping">Shopping</option>
+                    </Select>
+                  </FormControl>
+                  <Button colorScheme="blue" type="submit">Create Task</Button>
                 </VStack>
               </TabPanel>
             </TabPanels>
