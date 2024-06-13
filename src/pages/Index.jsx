@@ -80,6 +80,14 @@ const Index = () => {
               <FaTasks />
               <Text marginLeft="2">Shopping</Text>
             </Flex>
+            <Flex align="center">
+              <FaTasks />
+              <Text marginLeft="2">Projects</Text>
+            </Flex>
+            <Flex align="center">
+              <FaTasks />
+              <Text marginLeft="2">Kids</Text>
+            </Flex>
           </VStack>
         </Box>
 
@@ -104,6 +112,8 @@ const Index = () => {
                 <option value="personal">Personal</option>
                 <option value="work">Work</option>
                 <option value="shopping">Shopping</option>
+                <option value="projects">Projects</option>
+                <option value="kids">Kids</option>
               </Select>
             </FormControl>
           </Flex>
@@ -210,6 +220,8 @@ const Index = () => {
                       <option value="personal">Personal</option>
                       <option value="work">Work</option>
                       <option value="shopping">Shopping</option>
+                      <option value="projects">Projects</option>
+                      <option value="kids">Kids</option>
                     </Select>
                   </FormControl>
                   <Button colorScheme="blue" type="submit">Create Task</Button>
@@ -255,6 +267,8 @@ const Index = () => {
                     <option value="personal">Personal</option>
                     <option value="work">Work</option>
                     <option value="shopping">Shopping</option>
+                    <option value="projects">Projects</option>
+                    <option value="kids">Kids</option>
                   </Select>
                 </FormControl>
                 <Button colorScheme="blue" type="submit">Update Task</Button>
