@@ -1,5 +1,5 @@
-import { Box, Flex, Heading, VStack, Text, IconButton, useColorMode, Tabs, TabList, TabPanels, Tab, TabPanel, FormControl, FormLabel, Input, Select, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Checkbox } from "@chakra-ui/react";
-import { FaSun, FaMoon, FaTasks, FaEdit, FaTrash, FaTimes } from "react-icons/fa"; // Import FaTimes icon
+import { Box, Flex, Heading, VStack, Text, IconButton, useColorMode, Tabs, TabList, TabPanels, Tab, TabPanel, FormControl, FormLabel, Input, Select, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Checkbox, useBreakpointValue } from "@chakra-ui/react";
+import { FaSun, FaMoon, FaTasks, FaEdit, FaTrash, FaTimes } from "react-icons/fa";
 import { useState } from "react";
 
 const Index = () => {
@@ -65,8 +65,8 @@ const Index = () => {
   return (
     <Flex height="100vh" flexDirection="column">
       {/* Header */}
-      <Flex as="header" width="100%" padding="4" boxShadow="md" justifyContent="space-between" alignItems="center">
-        <Heading as="h1" size="lg">This is how my brain works</Heading>
+      <Flex as="header" width="100%" padding={useBreakpointValue({ base: "2", md: "4" })} boxShadow="md" justifyContent="space-between" alignItems="center">
+        <Heading as="h1" size={useBreakpointValue({ base: "md", md: "lg" })}>This is how my brain works</Heading>
         <IconButton
           aria-label="Toggle dark mode"
           icon={colorMode === "light" ? <FaMoon /> : <FaSun />}
@@ -76,7 +76,7 @@ const Index = () => {
 
       <Flex flex="1">
         {/* Sidebar */}
-        <Box as="nav" width="250px" padding="4" boxShadow="md">
+        <Box as="nav" width={useBreakpointValue({ base: "100%", md: "250px" })} padding={useBreakpointValue({ base: "2", md: "4" })} boxShadow="md">
           <VStack align="start" spacing="4">
             <Heading as="h2" size="md">Task Lists</Heading>
             <Flex align="center">
@@ -103,9 +103,9 @@ const Index = () => {
         </Box>
 
         {/* Main Content Area */}
-        <Box as="main" flex="1" padding="4">
-          <Flex mb="4" justifyContent="space-between">
-            <FormControl width="30%">
+        <Box as="main" flex="1" padding={useBreakpointValue({ base: "2", md: "4" })}>
+          <Flex mb="4" justifyContent="space-between" flexDirection={useBreakpointValue({ base: "column", md: "row" })}>
+            <FormControl width={useBreakpointValue({ base: "100%", md: "30%" })}>
               <FormLabel>Filter by Importance</FormLabel>
               <Select placeholder="All" onChange={(e) => setFilterImportance(e.target.value)}>
                 <option value="high">High</option>
@@ -113,11 +113,11 @@ const Index = () => {
                 <option value="low">Low</option>
               </Select>
             </FormControl>
-            <FormControl width="30%">
+            <FormControl width={useBreakpointValue({ base: "100%", md: "30%" })}>
               <FormLabel>Filter by Day</FormLabel>
               <Input type="date" onChange={(e) => setFilterDay(e.target.value)} />
             </FormControl>
-            <FormControl width="30%">
+            <FormControl width={useBreakpointValue({ base: "100%", md: "30%" })}>
               <FormLabel>Filter by Category</FormLabel>
               <Select placeholder="All" onChange={(e) => setFilterCategory(e.target.value)}>
                 <option value="personal">Personal</option>
@@ -133,7 +133,7 @@ const Index = () => {
               <Tab>Today Task</Tab>
               <Tab>All Task</Tab>
               <Tab>Create Task</Tab>
-              <Tab>DONE tasks</Tab> {/* Add DONE tasks tab */}
+              <Tab>DONE tasks</Tab>
             </TabList>
 
             <TabPanels>
@@ -289,7 +289,7 @@ const Index = () => {
                       <Text>Notes: {taskNotes[task.id]}</Text>
                       <Text>Next Check Date: {taskNextDate[task.id]}</Text>
                       <Flex mt="2">
-                        <IconButton aria-label="Task done" icon={<FaTimes />} /> {/* Display X icon */}
+                        <IconButton aria-label="Task done" icon={<FaTimes />} />
                       </Flex>
                     </Box>
                   ))}
