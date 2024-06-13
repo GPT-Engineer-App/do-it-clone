@@ -21,6 +21,7 @@ const Index = () => {
       scheduledTime: form["scheduled-time"].value,
       estimatedTime: form["estimated-time"].value,
       category: form["category"].value,
+      freeText: form["free-text"].value, // Add this line
     };
     setTasks([...tasks, newTask]);
     form.reset();
@@ -36,6 +37,7 @@ const Index = () => {
       scheduledTime: form["scheduled-time"].value,
       estimatedTime: form["estimated-time"].value,
       category: form["category"].value,
+      freeText: form["free-text"].value, // Add this line
     };
     setTasks(tasks.map(task => task.id === updatedTask.id ? updatedTask : task));
     setSelectedTask(null);
@@ -151,6 +153,7 @@ const Index = () => {
                       <Text>Scheduled Time: {new Date(task.scheduledTime).toLocaleString()}</Text>
                       <Text>Estimated Time: {task.estimatedTime} hours</Text>
                       <Text>Category: {task.category}</Text>
+                      <Text>Free Text: {task.freeText}</Text>
                       <Flex mt="2">
                         <IconButton aria-label="Edit task" icon={<FaEdit />} onClick={() => openTaskModal(task)} mr="2" />
                         <IconButton aria-label="Delete task" icon={<FaTrash />} onClick={() => handleDeleteTask(task.id)} />
@@ -184,6 +187,7 @@ const Index = () => {
                       <Text>Scheduled Time: {new Date(task.scheduledTime).toLocaleString()}</Text>
                       <Text>Estimated Time: {task.estimatedTime} hours</Text>
                       <Text>Category: {task.category}</Text>
+                      <Text>Free Text: {task.freeText}</Text>
                       <Flex mt="2">
                         <IconButton aria-label="Edit task" icon={<FaEdit />} onClick={() => openTaskModal(task)} mr="2" />
                         <IconButton aria-label="Delete task" icon={<FaTrash />} onClick={() => handleDeleteTask(task.id)} />
@@ -223,6 +227,10 @@ const Index = () => {
                       <option value="projects">Projects</option>
                       <option value="kids">Kids</option>
                     </Select>
+                  </FormControl>
+                  <FormControl id="free-text">
+                    <FormLabel>Free Text</FormLabel>
+                    <Input placeholder="Enter any additional details" />
                   </FormControl>
                   <Button colorScheme="blue" type="submit">Create Task</Button>
                 </VStack>
@@ -270,6 +278,10 @@ const Index = () => {
                     <option value="projects">Projects</option>
                     <option value="kids">Kids</option>
                   </Select>
+                </FormControl>
+                <FormControl id="free-text">
+                  <FormLabel>Free Text</FormLabel>
+                  <Input defaultValue={selectedTask.freeText} />
                 </FormControl>
                 <Button colorScheme="blue" type="submit">Update Task</Button>
               </VStack>
