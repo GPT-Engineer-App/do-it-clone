@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, VStack, Text, IconButton, useColorMode, Tabs, TabList, TabPanels, Tab, TabPanel, FormControl, FormLabel, Input, Select, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, Heading, VStack, Text, IconButton, useColorMode, Tabs, TabList, TabPanels, Tab, TabPanel, FormControl, FormLabel, Input, Select, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Checkbox } from "@chakra-ui/react";
 import { FaSun, FaMoon, FaTasks, FaEdit, FaTrash } from "react-icons/fa";
 import { useState } from "react";
 
@@ -10,6 +10,7 @@ const Index = () => {
   const [filterImportance, setFilterImportance] = useState("");
   const [filterDay, setFilterDay] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
+  const [taskCompletion, setTaskCompletion] = useState({});
 
   const handleCreateTask = (event) => {
     event.preventDefault();
@@ -21,7 +22,10 @@ const Index = () => {
       scheduledTime: form["scheduled-time"].value,
       estimatedTime: form["estimated-time"].value,
       category: form["category"].value,
-      freeText: form["free-text"].value, // Add this line
+      freeText: form["free-text"].value,
+      isCompleted: false,
+      completionNotes: "",
+      nextCheckDate: ""
     };
     setTasks([...tasks, newTask]);
     form.reset();
@@ -37,7 +41,10 @@ const Index = () => {
       scheduledTime: form["scheduled-time"].value,
       estimatedTime: form["estimated-time"].value,
       category: form["category"].value,
-      freeText: form["free-text"].value, // Add this line
+      freeText: form["free-text"].value,
+      isCompleted: form["is-completed"].checked,
+      completionNotes: form["completion-notes"].value,
+      nextCheckDate: form["next-check-date"].value
     };
     setTasks(tasks.map(task => task.id === updatedTask.id ? updatedTask : task));
     setSelectedTask(null);
@@ -154,6 +161,13 @@ const Index = () => {
                       <Text>Estimated Time: {task.estimatedTime} hours</Text>
                       <Text>Category: {task.category}</Text>
                       <Text>Free Text: {task.freeText}</Text>
+                      <Text>Completed: {task.isCompleted ? "Yes" : "No"}</Text>
+                      {task.isCompleted && (
+                        <>
+                          <Text>Completion Notes: {task.completionNotes}</Text>
+                          <Text>Next Check Date: {new Date(task.nextCheckDate).toLocaleString()}</Text>
+                        </>
+                      )}
                       <Flex mt="2">
                         <IconButton aria-label="Edit task" icon={<FaEdit />} onClick={() => openTaskModal(task)} mr="2" />
                         <IconButton aria-label="Delete task" icon={<FaTrash />} onClick={() => handleDeleteTask(task.id)} />
@@ -188,6 +202,13 @@ const Index = () => {
                       <Text>Estimated Time: {task.estimatedTime} hours</Text>
                       <Text>Category: {task.category}</Text>
                       <Text>Free Text: {task.freeText}</Text>
+                      <Text>Completed: {task.isCompleted ? "Yes" : "No"}</Text>
+                      {task.isCompleted && (
+                        <>
+                          <Text>Completion Notes: {task.completionNotes}</Text>
+                          <Text>Next Check Date: {new Date(task.nextCheckDate).toLocaleString()}</Text>
+                        </>
+                      )}
                       <Flex mt="2">
                         <IconButton aria-label="Edit task" icon={<FaEdit />} onClick={() => openTaskModal(task)} mr="2" />
                         <IconButton aria-label="Delete task" icon={<FaTrash />} onClick={() => handleDeleteTask(task.id)} />
@@ -290,6 +311,18 @@ const Index = () => {
                 <FormControl id="free-text">
                   <FormLabel>Free Text</FormLabel>
                   <Input defaultValue={selectedTask.freeText} />
+                </FormControl>
+                <FormControl id="is-completed">
+                  <FormLabel>Mark as Done</FormLabel>
+                  <Checkbox defaultChecked={selectedTask.isCompleted} />
+                </FormControl>
+                <FormControl id="completion-notes">
+                  <FormLabel>Completion Notes</FormLabel>
+                  <Input defaultValue={selectedTask.completionNotes} />
+                </FormControl>
+                <FormControl id="next-check-date">
+                  <FormLabel>Next Check Date</FormLabel>
+                  <Input type="datetime-local" defaultValue={selectedTask.nextCheckDate} />
                 </FormControl>
                 <Button colorScheme="blue" type="submit">Update Task</Button>
               </VStack>
