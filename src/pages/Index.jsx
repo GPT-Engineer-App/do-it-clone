@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, VStack, Text, IconButton, useColorMode } from "@chakra-ui/react";
+import { Box, Flex, Heading, VStack, Text, IconButton, useColorMode, Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import { FaSun, FaMoon, FaTasks } from "react-icons/fa";
 
 const Index = () => {
@@ -38,12 +38,35 @@ const Index = () => {
 
         {/* Main Content Area */}
         <Box as="main" flex="1" padding="4">
-          <Heading as="h2" size="md" marginBottom="4">Tasks</Heading>
-          <VStack align="start" spacing="4">
-            <Text>Task 1</Text>
-            <Text>Task 2</Text>
-            <Text>Task 3</Text>
-          </VStack>
+          <Tabs>
+            <TabList>
+              <Tab>Today Task</Tab>
+              <Tab>All Task</Tab>
+              <Tab>Create Task</Tab>
+            </TabList>
+
+            <TabPanels>
+              <TabPanel>
+                <VStack align="start" spacing="4">
+                  <Text>Today's Task 1</Text>
+                  <Text>Today's Task 2</Text>
+                  <Text>Today's Task 3</Text>
+                </VStack>
+              </TabPanel>
+              <TabPanel>
+                <VStack align="start" spacing="4">
+                  <Text>All Task 1</Text>
+                  <Text>All Task 2</Text>
+                  <Text>All Task 3</Text>
+                </VStack>
+              </TabPanel>
+              <TabPanel>
+                <VStack align="start" spacing="4">
+                  <Text>Create a new task here...</Text>
+                </VStack>
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
         </Box>
       </Flex>
     </Flex>
