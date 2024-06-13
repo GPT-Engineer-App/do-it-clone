@@ -215,8 +215,12 @@ const Index = () => {
                     <Input type="datetime-local" />
                   </FormControl>
                   <FormControl id="estimated-time" isRequired>
-                    <FormLabel>Estimated Time to Complete</FormLabel>
-                    <Input type="number" placeholder="Enter estimated time in hours" />
+                    <FormLabel>Estimated Time to Complete (in minutes)</FormLabel>
+                    <Select placeholder="Select estimated time">
+                      {[...Array(24 * 12)].map((_, i) => (
+                        <option key={i} value={(i + 1) * 5}>{(i + 1) * 5} minutes</option>
+                      ))}
+                    </Select>
                   </FormControl>
                   <FormControl id="category" isRequired>
                     <FormLabel>Category</FormLabel>
@@ -266,8 +270,12 @@ const Index = () => {
                   <Input type="datetime-local" defaultValue={selectedTask.scheduledTime} />
                 </FormControl>
                 <FormControl id="estimated-time" isRequired>
-                  <FormLabel>Estimated Time to Complete</FormLabel>
-                  <Input type="number" defaultValue={selectedTask.estimatedTime} />
+                  <FormLabel>Estimated Time to Complete (in minutes)</FormLabel>
+                  <Select defaultValue={selectedTask.estimatedTime}>
+                    {[...Array(24 * 12)].map((_, i) => (
+                      <option key={i} value={(i + 1) * 5}>{(i + 1) * 5} minutes</option>
+                    ))}
+                  </Select>
                 </FormControl>
                 <FormControl id="category" isRequired>
                   <FormLabel>Category</FormLabel>
