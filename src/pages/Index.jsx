@@ -93,7 +93,15 @@ const Index = () => {
               <TabPanel>
                 <VStack align="start" spacing="4">
                   {tasks.filter(task => new Date(task.scheduledTime).toDateString() === new Date().toDateString()).map((task, index) => (
-                    <Box key={index} borderWidth="1px" borderRadius="lg" overflow="hidden" p="4" mb="4">
+                    <Box
+                      key={index}
+                      borderWidth="1px"
+                      borderRadius="lg"
+                      overflow="hidden"
+                      p="4"
+                      mb="4"
+                      bg={task.importance === 'high' ? 'red.200' : task.importance === 'medium' ? 'yellow.200' : 'green.200'}
+                    >
                       <Text fontWeight="bold">{task.name}</Text>
                       <Text>Importance: {task.importance}</Text>
                       <Text>Scheduled Time: {new Date(task.scheduledTime).toLocaleString()}</Text>
@@ -110,7 +118,15 @@ const Index = () => {
               <TabPanel>
                 <VStack align="start" spacing="4">
                   {tasks.map((task, index) => (
-                    <Box key={index} borderWidth="1px" borderRadius="lg" overflow="hidden" p="4" mb="4">
+                    <Box
+                      key={index}
+                      borderWidth="1px"
+                      borderRadius="lg"
+                      overflow="hidden"
+                      p="4"
+                      mb="4"
+                      bg={task.importance === 'high' ? 'red.200' : task.importance === 'medium' ? 'yellow.200' : 'green.200'}
+                    >
                       <Text fontWeight="bold">{task.name}</Text>
                       <Text>Importance: {task.importance}</Text>
                       <Text>Scheduled Time: {new Date(task.scheduledTime).toLocaleString()}</Text>
