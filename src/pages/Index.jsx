@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, VStack, Text, IconButton, useColorMode, Tabs, TabList, TabPanels, Tab, TabPanel, FormControl, FormLabel, Input, Select, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure } from "@chakra-ui/react";
+import { Box, Flex, Heading, VStack, Text, IconButton, useColorMode, Tabs, TabList, TabPanels, Tab, TabPanel, FormControl, FormLabel, Input, Select, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Checkbox, Textarea } from "@chakra-ui/react";
 import { FaSun, FaMoon, FaTasks, FaEdit, FaTrash } from "react-icons/fa";
 import { useState } from "react";
 
@@ -10,6 +10,9 @@ const Index = () => {
   const [filterImportance, setFilterImportance] = useState("");
   const [filterDay, setFilterDay] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
+  const [isTaskDone, setIsTaskDone] = useState(false);
+  const [taskNotes, setTaskNotes] = useState("");
+  const [rescheduledDate, setRescheduledDate] = useState("");
 
   const handleCreateTask = (event) => {
     event.preventDefault();
@@ -21,7 +24,10 @@ const Index = () => {
       scheduledTime: form["scheduled-time"].value,
       estimatedTime: form["estimated-time"].value,
       category: form["category"].value,
-      freeText: form["free-text"].value, // Add this line
+      freeText: form["free-text"].value,
+      isDone: false,
+      notes: "",
+      rescheduledDate: "",
     };
     setTasks([...tasks, newTask]);
     form.reset();
@@ -37,7 +43,10 @@ const Index = () => {
       scheduledTime: form["scheduled-time"].value,
       estimatedTime: form["estimated-time"].value,
       category: form["category"].value,
-      freeText: form["free-text"].value, // Add this line
+      freeText: form["free-text"].value,
+      isDone: isTaskDone,
+      notes: taskNotes,
+      rescheduledDate: rescheduledDate,
     };
     setTasks(tasks.map(task => task.id === updatedTask.id ? updatedTask : task));
     setSelectedTask(null);
@@ -50,6 +59,9 @@ const Index = () => {
 
   const openTaskModal = (task) => {
     setSelectedTask(task);
+    setIsTaskDone(task.isDone);
+    setTaskNotes(task.notes);
+    setRescheduledDate(task.rescheduledDate);
     onOpen();
   };
 
@@ -154,6 +166,9 @@ const Index = () => {
                       <Text>Estimated Time: {task.estimatedTime} hours</Text>
                       <Text>Category: {task.category}</Text>
                       <Text>Free Text: {task.freeText}</Text>
+                      <Text>Done: {task.isDone ? "Yes" : "No"}</Text>
+                      <Text>Notes: {task.notes}</Text>
+                      <Text>Rescheduled Date: {task.rescheduledDate ? new Date(task.rescheduledDate).toLocaleString() : "N/A"}</Text>
                       <Flex mt="2">
                         <IconButton aria-label="Edit task" icon={<FaEdit />} onClick={() => openTaskModal(task)} mr="2" />
                         <IconButton aria-label="Delete task" icon={<FaTrash />} onClick={() => handleDeleteTask(task.id)} />
@@ -188,6 +203,9 @@ const Index = () => {
                       <Text>Estimated Time: {task.estimatedTime} hours</Text>
                       <Text>Category: {task.category}</Text>
                       <Text>Free Text: {task.freeText}</Text>
+                      <Text>Done: {task.isDone ? "Yes" : "No"}</Text>
+                      <Text>Notes: {task.notes}</Text>
+                      <Text>Rescheduled Date: {task.rescheduledDate ? new Date(task.rescheduledDate).toLocaleString() : "N/A"}</Text>
                       <Flex mt="2">
                         <IconButton aria-label="Edit task" icon={<FaEdit />} onClick={() => openTaskModal(task)} mr="2" />
                         <IconButton aria-label="Delete task" icon={<FaTrash />} onClick={() => handleDeleteTask(task.id)} />
@@ -290,6 +308,18 @@ const Index = () => {
                 <FormControl id="free-text">
                   <FormLabel>Free Text</FormLabel>
                   <Input defaultValue={selectedTask.freeText} />
+                </FormControl>
+                <FormControl id="is-done">
+                  <FormLabel>Mark as Done</FormLabel>
+                  <Checkbox isChecked={isTaskDone} onChange={(e) => setIsTaskDone(e.target.checked)}>Done</Checkbox>
+                </FormControl>
+                <FormControl id="task-notes">
+                  <FormLabel>Notes</FormLabel>
+                  <Textarea value={taskNotes} onChange={(e) => setTaskNotes(e.target.value)} placeholder="Enter any notes" />
+                </FormControl>
+                <FormControl id="rescheduled-date">
+                  <FormLabel>Rescheduled Date</FormLabel>
+                  <Input type="datetime-local" value={rescheduledDate} onChange={(e) => setRescheduledDate(e.target.value)} />
                 </FormControl>
                 <Button colorScheme="blue" type="submit">Update Task</Button>
               </VStack>
