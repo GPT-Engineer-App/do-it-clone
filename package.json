@@ -2,7 +2,7 @@
     "name": "this-is-how-my-brain-works",
     "private": true,
     "version": "0.0.0",
-    "type": "module",
+    "type": "commonjs",
     "scripts": {
         "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
         "start": "react-native start",
