@@ -7,7 +7,8 @@
         "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
         "start": "react-native start",
         "android": "react-native run-android",
-        "ios": "react-native run-ios"
+        "ios": "react-native run-ios",
+        "build": "react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios/main.jsbundle --assets-dest ios"
     },
     "devDependencies": {
         "@types/react": "^18.2.38",
