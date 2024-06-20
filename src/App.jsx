@@ -1,14 +1,1 @@
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import Index from "./pages/Index.jsx";
-
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route exact path="/" element={<Index />} />
-      </Routes>
-    </Router>
-  );
-}
-
-export default App;
+// This file is not needed in React Native and can be deleted.

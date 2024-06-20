@@ -1,56 +1,55 @@
-import { Box, Flex, Heading, VStack, Text, IconButton, useColorMode, Tabs, TabList, TabPanels, Tab, TabPanel, FormControl, FormLabel, Input, Select, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure, Checkbox, useBreakpointValue } from "@chakra-ui/react";
-import { FaSun, FaMoon, FaTasks, FaEdit, FaTrash, FaTimes } from "react-icons/fa";
-import { useState } from "react";
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, Modal, TouchableOpacity, ScrollView, StyleSheet, Switch } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const Index = () => {
-  const { colorMode, toggleColorMode } = useColorMode();
   const [tasks, setTasks] = useState([]);
   const [selectedTask, setSelectedTask] = useState(null);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isModalVisible, setModalVisible] = useState(false);
   const [filterImportance, setFilterImportance] = useState("");
   const [filterDay, setFilterDay] = useState("");
   const [filterCategory, setFilterCategory] = useState("");
   const [taskCompletion, setTaskCompletion] = useState({});
   const [taskNotes, setTaskNotes] = useState({});
   const [taskNextDate, setTaskNextDate] = useState({});
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const handleCreateTask = (event) => {
     event.preventDefault();
-    const form = event.target;
     const newTask = {
       id: Date.now(),
-      name: form["task-name"].value,
-      importance: form["importance"].value,
-      scheduledTime: form["scheduled-time"].value,
-      estimatedTime: form["estimated-time"].value,
-      category: form["category"].value,
-      freeText: form["free-text"].value,
+      name: event.target["task-name"].value,
+      importance: event.target["importance"].value,
+      scheduledTime: event.target["scheduled-time"].value,
+      estimatedTime: event.target["estimated-time"].value,
+      category: event.target["category"].value,
+      freeText: event.target["free-text"].value,
     };
     setTasks([...tasks, newTask]);
     setTaskCompletion({ ...taskCompletion, [newTask.id]: false });
     setTaskNotes({ ...taskNotes, [newTask.id]: "" });
     setTaskNextDate({ ...taskNextDate, [newTask.id]: "" });
-    form.reset();
+    event.target.reset();
   };
 
   const handleUpdateTask = (event) => {
     event.preventDefault();
-    const form = event.target;
     const updatedTask = {
       ...selectedTask,
-      name: form["task-name"].value,
-      importance: form["importance"].value,
-      scheduledTime: form["scheduled-time"].value,
-      estimatedTime: form["estimated-time"].value,
-      category: form["category"].value,
-      freeText: form["free-text"].value,
+      name: event.target["task-name"].value,
+      importance: event.target["importance"].value,
+      scheduledTime: event.target["scheduled-time"].value,
+      estimatedTime: event.target["estimated-time"].value,
+      category: event.target["category"].value,
+      freeText: event.target["free-text"].value,
     };
     setTasks(tasks.map(task => task.id === updatedTask.id ? updatedTask : task));
-    setTaskCompletion({ ...taskCompletion, [updatedTask.id]: form["task-completion"].checked });
-    setTaskNotes({ ...taskNotes, [updatedTask.id]: form["task-notes"].value });
-    setTaskNextDate({ ...taskNextDate, [updatedTask.id]: form["task-next-date"].value });
+    setTaskCompletion({ ...taskCompletion, [updatedTask.id]: event.target["task-completion"].checked });
+    setTaskNotes({ ...taskNotes, [updatedTask.id]: event.target["task-notes"].value });
+    setTaskNextDate({ ...taskNextDate, [updatedTask.id]: event.target["task-next-date"].value });
     setSelectedTask(null);
-    onClose();
+    setModalVisible(false);
   };
 
   const handleDeleteTask = (taskId) => {
@@ -59,317 +58,268 @@ const Index = () => {
 
   const openTaskModal = (task) => {
     setSelectedTask(task);
-    onOpen();
+    setModalVisible(true);
   };
 
   return (
-    <Flex height="100vh" flexDirection="column">
+    <View style={[styles.container, isDarkMode && styles.darkContainer]}>
       {/* Header */}
-      <Flex as="header" width="100%" padding={useBreakpointValue({ base: "2", md: "4" })} boxShadow="md" justifyContent="space-between" alignItems="center">
-        <Heading as="h1" size={useBreakpointValue({ base: "md", md: "lg" })}>This is how my brain works</Heading>
-        <IconButton
-          aria-label="Toggle dark mode"
-          icon={colorMode === "light" ? <FaMoon /> : <FaSun />}
-          onClick={toggleColorMode}
-        />
-      </Flex>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>This is how my brain works</Text>
+        <TouchableOpacity onPress={() => setIsDarkMode(!isDarkMode)}>
+          <Icon name={isDarkMode ? "sun-o" : "moon-o"} size={24} color={isDarkMode ? "#fff" : "#000"} />
+        </TouchableOpacity>
+      </View>
 
-      <Flex flex="1">
+      <View style={styles.content}>
         {/* Sidebar */}
-        <Box as="nav" width={useBreakpointValue({ base: "100%", md: "250px" })} padding={useBreakpointValue({ base: "2", md: "4" })} boxShadow="md">
-          <VStack align="start" spacing="4">
-            <Heading as="h2" size="md">Task Lists</Heading>
-            <Flex align="center">
-              <FaTasks />
-              <Text marginLeft="2">Personal</Text>
-            </Flex>
-            <Flex align="center">
-              <FaTasks />
-              <Text marginLeft="2">Work</Text>
-            </Flex>
-            <Flex align="center">
-              <FaTasks />
-              <Text marginLeft="2">Shopping</Text>
-            </Flex>
-            <Flex align="center">
-              <FaTasks />
-              <Text marginLeft="2">Projects</Text>
-            </Flex>
-            <Flex align="center">
-              <FaTasks />
-              <Text marginLeft="2">Kids</Text>
-            </Flex>
-          </VStack>
-        </Box>
+        <View style={styles.sidebar}>
+          <Text style={styles.sidebarTitle}>Task Lists</Text>
+          {["Personal", "Work", "Shopping", "Projects", "Kids"].map((category, index) => (
+            <View key={index} style={styles.sidebarItem}>
+              <Icon name="tasks" size={20} />
+              <Text style={styles.sidebarItemText}>{category}</Text>
+            </View>
+          ))}
+        </View>
 
         {/* Main Content Area */}
-        <Box as="main" flex="1" padding={useBreakpointValue({ base: "2", md: "4" })}>
-          <Flex mb="4" justifyContent="space-between" flexDirection={useBreakpointValue({ base: "column", md: "row" })}>
-            <FormControl width={useBreakpointValue({ base: "100%", md: "30%" })}>
-              <FormLabel>Filter by Importance</FormLabel>
-              <Select placeholder="All" onChange={(e) => setFilterImportance(e.target.value)}>
-                <option value="high">High</option>
-                <option value="medium">Medium</option>
-                <option value="low">Low</option>
-              </Select>
-            </FormControl>
-            <FormControl width={useBreakpointValue({ base: "100%", md: "30%" })}>
-              <FormLabel>Filter by Day</FormLabel>
-              <Input type="date" onChange={(e) => setFilterDay(e.target.value)} />
-            </FormControl>
-            <FormControl width={useBreakpointValue({ base: "100%", md: "30%" })}>
-              <FormLabel>Filter by Category</FormLabel>
-              <Select placeholder="All" onChange={(e) => setFilterCategory(e.target.value)}>
-                <option value="personal">Personal</option>
-                <option value="work">Work</option>
-                <option value="shopping">Shopping</option>
-                <option value="projects">Projects</option>
-                <option value="kids">Kids</option>
-              </Select>
-            </FormControl>
-          </Flex>
-          <Tabs>
-            <TabList>
-              <Tab>Today Task</Tab>
-              <Tab>All Task</Tab>
-              <Tab>Create Task</Tab>
-              <Tab>DONE tasks</Tab>
-            </TabList>
+        <View style={styles.mainContent}>
+          <ScrollView>
+            <View style={styles.filters}>
+              <View style={styles.filter}>
+                <Text>Filter by Importance</Text>
+                <TextInput
+                  placeholder="All"
+                  onChangeText={setFilterImportance}
+                  style={styles.input}
+                />
+              </View>
+              <View style={styles.filter}>
+                <Text>Filter by Day</Text>
+                <DateTimePicker
+                  value={new Date()}
+                  mode="date"
+                  display="default"
+                  onChange={(event, date) => setFilterDay(date)}
+                />
+              </View>
+              <View style={styles.filter}>
+                <Text>Filter by Category</Text>
+                <TextInput
+                  placeholder="All"
+                  onChangeText={setFilterCategory}
+                  style={styles.input}
+                />
+              </View>
+            </View>
 
-            <TabPanels>
-              <TabPanel>
-                <VStack align="start" spacing="4">
-                  {tasks.filter(task => new Date(task.scheduledTime).toDateString() === new Date().toDateString())
-                    .filter(task => {
-                      const taskDate = new Date(task.scheduledTime).toDateString();
-                      const filterDate = new Date(filterDay).toDateString();
-                      return (
-                        (filterImportance === "" || task.importance === filterImportance) &&
-                        (filterDay === "" || taskDate === filterDate) &&
-                        (filterCategory === "" || task.category === filterCategory)
-                      );
-                    }).map((task, index) => (
-                    <Box
-                      key={index}
-                      borderWidth="1px"
-                      borderRadius="lg"
-                      overflow="hidden"
-                      p="4"
-                      mb="4"
-                      bg={task.importance === 'high' ? '#E19093' : task.importance === 'medium' ? '#FFE0BD' : '#D9EAD3'}
-                    >
-                      <Text fontWeight="bold">{task.name}</Text>
-                      <Text>Importance: {task.importance}</Text>
-                      <Text>Scheduled Time: {new Date(task.scheduledTime).toLocaleString()}</Text>
-                      <Text>Estimated Time: {task.estimatedTime} hours</Text>
-                      <Text>Category: {task.category}</Text>
-                      <Text>Free Text: {task.freeText}</Text>
-                      <Text>Completion Status: {taskCompletion[task.id] ? "Done" : "Pending"}</Text>
-                      <Text>Notes: {taskNotes[task.id]}</Text>
-                      <Text>Next Check Date: {taskNextDate[task.id]}</Text>
-                      <Flex mt="2">
-                        <IconButton aria-label="Edit task" icon={<FaEdit />} onClick={() => openTaskModal(task)} mr="2" />
-                        <IconButton aria-label="Delete task" icon={<FaTrash />} onClick={() => handleDeleteTask(task.id)} />
-                      </Flex>
-                    </Box>
-                  ))}
-                </VStack>
-              </TabPanel>
-              <TabPanel>
-                <VStack align="start" spacing="4">
-                  {tasks.filter(task => {
-                      const taskDate = new Date(task.scheduledTime).toDateString();
-                      const filterDate = new Date(filterDay).toDateString();
-                      return (
-                        (filterImportance === "" || task.importance === filterImportance) &&
-                        (filterDay === "" || taskDate === filterDate) &&
-                        (filterCategory === "" || task.category === filterCategory)
-                      );
-                    }).map((task, index) => (
-                    <Box
-                      key={index}
-                      borderWidth="1px"
-                      borderRadius="lg"
-                      overflow="hidden"
-                      p="4"
-                      mb="4"
-                      bg={task.importance === 'high' ? '#E19093' : task.importance === 'medium' ? '#FFE0BD' : '#D9EAD3'}
-                    >
-                      <Text fontWeight="bold">{task.name}</Text>
-                      <Text>Importance: {task.importance}</Text>
-                      <Text>Scheduled Time: {new Date(task.scheduledTime).toLocaleString()}</Text>
-                      <Text>Estimated Time: {task.estimatedTime} hours</Text>
-                      <Text>Category: {task.category}</Text>
-                      <Text>Free Text: {task.freeText}</Text>
-                      <Text>Completion Status: {taskCompletion[task.id] ? "Done" : "Pending"}</Text>
-                      <Text>Notes: {taskNotes[task.id]}</Text>
-                      <Text>Next Check Date: {taskNextDate[task.id]}</Text>
-                      <Flex mt="2">
-                        <IconButton aria-label="Edit task" icon={<FaEdit />} onClick={() => openTaskModal(task)} mr="2" />
-                        <IconButton aria-label="Delete task" icon={<FaTrash />} onClick={() => handleDeleteTask(task.id)} />
-                      </Flex>
-                    </Box>
-                  ))}
-                </VStack>
-              </TabPanel>
-              <TabPanel>
-                <VStack align="start" spacing="4" as="form" onSubmit={handleCreateTask}>
-                  <FormControl id="task-name" isRequired>
-                    <FormLabel>Task Name</FormLabel>
-                    <Input placeholder="Enter task name" />
-                  </FormControl>
-                  <FormControl id="importance" isRequired>
-                    <FormLabel>Importance</FormLabel>
-                    <Select placeholder="Select importance">
-                      <option value="high">High</option>
-                      <option value="medium">Medium</option>
-                      <option value="low">Low</option>
-                    </Select>
-                  </FormControl>
-                  <FormControl id="scheduled-time" isRequired>
-                    <FormLabel>Scheduled Time</FormLabel>
-                    <Input type="datetime-local" />
-                  </FormControl>
-                  <FormControl id="estimated-time" isRequired>
-                    <FormLabel>Estimated Time to Complete (in minutes)</FormLabel>
-                    <Select placeholder="Select estimated time">
-                      {[...Array(24 * 12)].map((_, i) => (
-                        <option key={i} value={(i + 1) * 5}>{(i + 1) * 5} minutes</option>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  <FormControl id="category" isRequired>
-                    <FormLabel>Category</FormLabel>
-                    <Select placeholder="Select category">
-                      <option value="personal">Personal</option>
-                      <option value="work">Work</option>
-                      <option value="shopping">Shopping</option>
-                      <option value="projects">Projects</option>
-                      <option value="kids">Kids</option>
-                    </Select>
-                  </FormControl>
-                  <FormControl id="free-text">
-                    <FormLabel>Free Text</FormLabel>
-                    <Input placeholder="Enter any additional details" />
-                  </FormControl>
-                  <FormControl id="task-completion">
-                    <FormLabel>Mark as Done</FormLabel>
-                    <Checkbox />
-                  </FormControl>
-                  <FormControl id="task-notes">
-                    <FormLabel>Notes</FormLabel>
-                    <Input placeholder="Enter any additional notes" />
-                  </FormControl>
-                  <FormControl id="task-next-date">
-                    <FormLabel>Next Check Date</FormLabel>
-                    <Input type="datetime-local" />
-                  </FormControl>
-                  <Button colorScheme="blue" type="submit">Create Task</Button>
-                </VStack>
-              </TabPanel>
-              <TabPanel>
-                <VStack align="start" spacing="4">
-                  {tasks.filter(task => taskCompletion[task.id]).map((task, index) => (
-                    <Box
-                      key={index}
-                      borderWidth="1px"
-                      borderRadius="lg"
-                      overflow="hidden"
-                      p="4"
-                      mb="4"
-                      bg={task.importance === 'high' ? '#E19093' : task.importance === 'medium' ? '#FFE0BD' : '#D9EAD3'}
-                    >
-                      <Text fontWeight="bold">{task.name}</Text>
-                      <Text>Importance: {task.importance}</Text>
-                      <Text>Scheduled Time: {new Date(task.scheduledTime).toLocaleString()}</Text>
-                      <Text>Estimated Time: {task.estimatedTime} hours</Text>
-                      <Text>Category: {task.category}</Text>
-                      <Text>Free Text: {task.freeText}</Text>
-                      <Text>Completion Status: Done</Text>
-                      <Text>Notes: {taskNotes[task.id]}</Text>
-                      <Text>Next Check Date: {taskNextDate[task.id]}</Text>
-                      <Flex mt="2">
-                        <IconButton aria-label="Task done" icon={<FaTimes />} />
-                      </Flex>
-                    </Box>
-                  ))}
-                </VStack>
-              </TabPanel>
-            </TabPanels>
-          </Tabs>
-        </Box>
-      </Flex>
+            <View style={styles.tabs}>
+              <TouchableOpacity style={styles.tab}>
+                <Text>Today Task</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.tab}>
+                <Text>All Task</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.tab}>
+                <Text>Create Task</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.tab}>
+                <Text>DONE tasks</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.tabContent}>
+              {tasks.filter(task => new Date(task.scheduledTime).toDateString() === new Date().toDateString())
+                .filter(task => {
+                  const taskDate = new Date(task.scheduledTime).toDateString();
+                  const filterDate = new Date(filterDay).toDateString();
+                  return (
+                    (filterImportance === "" || task.importance === filterImportance) &&
+                    (filterDay === "" || taskDate === filterDate) &&
+                    (filterCategory === "" || task.category === filterCategory)
+                  );
+                }).map((task, index) => (
+                  <View key={index} style={styles.task}>
+                    <Text style={styles.taskName}>{task.name}</Text>
+                    <Text>Importance: {task.importance}</Text>
+                    <Text>Scheduled Time: {new Date(task.scheduledTime).toLocaleString()}</Text>
+                    <Text>Estimated Time: {task.estimatedTime} hours</Text>
+                    <Text>Category: {task.category}</Text>
+                    <Text>Free Text: {task.freeText}</Text>
+                    <Text>Completion Status: {taskCompletion[task.id] ? "Done" : "Pending"}</Text>
+                    <Text>Notes: {taskNotes[task.id]}</Text>
+                    <Text>Next Check Date: {taskNextDate[task.id]}</Text>
+                    <View style={styles.taskActions}>
+                      <TouchableOpacity onPress={() => openTaskModal(task)}>
+                        <Icon name="edit" size={20} />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => handleDeleteTask(task.id)}>
+                        <Icon name="trash" size={20} />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ))}
+            </View>
+          </ScrollView>
+        </View>
+      </View>
 
       {/* Task Modal */}
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Update Task</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            {selectedTask && (
-              <VStack align="start" spacing="4" as="form" onSubmit={handleUpdateTask}>
-                <FormControl id="task-name" isRequired>
-                  <FormLabel>Task Name</FormLabel>
-                  <Input defaultValue={selectedTask.name} />
-                </FormControl>
-                <FormControl id="importance" isRequired>
-                  <FormLabel>Importance</FormLabel>
-                  <Select defaultValue={selectedTask.importance}>
-                    <option value="high">High</option>
-                    <option value="medium">Medium</option>
-                    <option value="low">Low</option>
-                  </Select>
-                </FormControl>
-                <FormControl id="scheduled-time" isRequired>
-                  <FormLabel>Scheduled Time</FormLabel>
-                  <Input type="datetime-local" defaultValue={selectedTask.scheduledTime} />
-                </FormControl>
-                <FormControl id="estimated-time" isRequired>
-                  <FormLabel>Estimated Time to Complete (in minutes)</FormLabel>
-                  <Select defaultValue={selectedTask.estimatedTime}>
-                    {[...Array(24 * 12)].map((_, i) => (
-                      <option key={i} value={(i + 1) * 5}>{(i + 1) * 5} minutes</option>
-                    ))}
-                  </Select>
-                </FormControl>
-                <FormControl id="category" isRequired>
-                  <FormLabel>Category</FormLabel>
-                  <Select defaultValue={selectedTask.category}>
-                    <option value="personal">Personal</option>
-                    <option value="work">Work</option>
-                    <option value="shopping">Shopping</option>
-                    <option value="projects">Projects</option>
-                    <option value="kids">Kids</option>
-                  </Select>
-                </FormControl>
-                <FormControl id="free-text">
-                  <FormLabel>Free Text</FormLabel>
-                  <Input defaultValue={selectedTask.freeText} />
-                </FormControl>
-                <FormControl id="task-completion">
-                  <FormLabel>Mark as Done</FormLabel>
-                  <Checkbox defaultChecked={taskCompletion[selectedTask.id]} />
-                </FormControl>
-                <FormControl id="task-notes">
-                  <FormLabel>Notes</FormLabel>
-                  <Input defaultValue={taskNotes[selectedTask.id]} />
-                </FormControl>
-                <FormControl id="task-next-date">
-                  <FormLabel>Next Check Date</FormLabel>
-                  <Input type="datetime-local" defaultValue={taskNextDate[selectedTask.id]} />
-                </FormControl>
-                <Button colorScheme="blue" type="submit">Update Task</Button>
-              </VStack>
-            )}
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="ghost" onClick={onClose}>Close</Button>
-          </ModalFooter>
-        </ModalContent>
+      <Modal visible={isModalVisible} onRequestClose={() => setModalVisible(false)}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Update Task</Text>
+          {selectedTask && (
+            <View style={styles.form}>
+              <TextInput
+                placeholder="Task Name"
+                defaultValue={selectedTask.name}
+                style={styles.input}
+              />
+              <TextInput
+                placeholder="Importance"
+                defaultValue={selectedTask.importance}
+                style={styles.input}
+              />
+              <DateTimePicker
+                value={new Date(selectedTask.scheduledTime)}
+                mode="datetime"
+                display="default"
+                onChange={(event, date) => setSelectedTask({ ...selectedTask, scheduledTime: date })}
+              />
+              <TextInput
+                placeholder="Estimated Time"
+                defaultValue={selectedTask.estimatedTime}
+                style={styles.input}
+              />
+              <TextInput
+                placeholder="Category"
+                defaultValue={selectedTask.category}
+                style={styles.input}
+              />
+              <TextInput
+                placeholder="Free Text"
+                defaultValue={selectedTask.freeText}
+                style={styles.input}
+              />
+              <Switch
+                value={taskCompletion[selectedTask.id]}
+                onValueChange={(value) => setTaskCompletion({ ...taskCompletion, [selectedTask.id]: value })}
+              />
+              <TextInput
+                placeholder="Notes"
+                defaultValue={taskNotes[selectedTask.id]}
+                style={styles.input}
+              />
+              <DateTimePicker
+                value={new Date(taskNextDate[selectedTask.id])}
+                mode="datetime"
+                display="default"
+                onChange={(event, date) => setTaskNextDate({ ...taskNextDate, [selectedTask.id]: date })}
+              />
+              <Button title="Update Task" onPress={handleUpdateTask} />
+            </View>
+          )}
+          <Button title="Close" onPress={() => setModalVisible(false)} />
+        </View>
       </Modal>
-    </Flex>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 10,
+  },
+  darkContainer: {
+    backgroundColor: '#333',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 1,
+  },
+  headerText: {
+    fontSize: 24,
+  },
+  content: {
+    flexDirection: 'row',
+    flex: 1,
+  },
+  sidebar: {
+    width: 250,
+    padding: 10,
+    borderRightWidth: 1,
+  },
+  sidebarTitle: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  sidebarItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  sidebarItemText: {
+    marginLeft: 10,
+  },
+  mainContent: {
+    flex: 1,
+    padding: 10,
+  },
+  filters: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  filter: {
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  input: {
+    borderWidth: 1,
+    padding: 5,
+    marginVertical: 5,
+  },
+  tabs: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 10,
+  },
+  tab: {
+    padding: 10,
+    borderBottomWidth: 1,
+  },
+  tabContent: {
+    flex: 1,
+  },
+  task: {
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  },
+  taskName: {
+    fontWeight: 'bold',
+  },
+  taskActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  modalContent: {
+    padding: 20,
+  },
+  modalTitle: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  form: {
+    marginBottom: 20,
+  },
+});
 
 export default Index;
